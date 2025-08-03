@@ -1,0 +1,39 @@
+﻿@page "/estado"
+@inject HttpClient Http
+
+<h3>Estado del sistema</h3>
+
+@if (error != null)
+{
+    <p style="color:red">Error: @error</p>
+}
+else if (lotes == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <ul>
+        @foreach (var lote in lotes)
+        {
+            <li>@lote</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<string>? lotes;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            lotes = await Http.GetFromJsonAsync<List<string>>("api/produccion");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}

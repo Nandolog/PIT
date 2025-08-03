@@ -99,6 +99,81 @@ Agregar persistencia simulada o real
 Desplegar en entorno Docker
 
 Preparar presentación técnica para validación interna
+---
+
+## 🛠️ Cambios recientes (agosto 2025)
+
+### 🔧 Backend
+
+- Se habilitó CORS para permitir llamadas desde el frontend (`https://localhost:7176`):
+
+```csharp
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy.WithOrigins("https://localhost:7176")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+app.UseCors("AllowFrontend");
+Se confirmó que el backend corre en https://localhost:32775 y expone Swagger UI con los siguientes endpoints:
+
+Método	Ruta	Descripción
+GET	/api/Produccion	Devuelve lista simulada de lotes
+POST	/api/Produccion	Agrega un nuevo lote
+🌐 Frontend
+Se corrigió la URL del backend en Program.cs:
+
+csharp
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("https://localhost:32775")
+});
+Se creó el componente EstadoDelSistema.razor que consume el endpoint api/produccion y muestra los lotes:
+
+razor
+@inject HttpClient Http
+
+<h3>Estado del sistema</h3>
+
+@if (error != null)
+{
+    <p style="color:red">Error: @error</p>
+}
+else if (lotes == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <ul>
+        @foreach (var lote in lotes)
+        {
+            <li>@lote</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<string>? lotes;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            lotes = await Http.GetFromJsonAsync<List<string>>("api/produccion");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}
+📌 Verificación
+Swagger UI disponible en: https://localhost:32775/swagger
+
+Frontend Blazor funcionando en: https://localhost:7176
 
 🤝 Autor
 Fernando — Analista técnico, enfocado en soluciones reales, reproducibles y documentada
