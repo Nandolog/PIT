@@ -3,6 +3,25 @@
 Este proyecto busca demostrar cómo aplicar soluciones tecnológicas reales en entornos industriales con restricciones, usando .NET, Blazor WebAssembly y Docker.
 
 ---
+---
+
+## 🎯 Propósito técnico del sistema de embolsado
+
+Este sistema busca monitorear, analizar y documentar el proceso de embolsado de cemento, con los siguientes objetivos:
+
+- 🔍 **Identificar cuellos de botella y pérdidas operativas**  
+  Detectar interrupciones, tiempos muertos y errores en el flujo de embolsado.
+
+- 📦 **Mejorar la trazabilidad del producto**  
+  Asociar cada lote embolsado con su origen, destino y condiciones operativas.
+
+- 🎓 **Facilitar la capacitación técnica**  
+  Proveer datos reales y visualizaciones para entrenar al personal en decisiones operativas.
+
+- 🧠 **Apoyar la toma de decisiones técnicas**  
+  Generar reportes y métricas que ayuden a ajustar procesos, planificar mantenimiento y optimizar recursos.
+
+Este enfoque permite aplicar tecnología en entornos industriales con restricciones reales, demostrando cómo .NET, Blazor y WebAPI pueden generar impacto operativo concreto.
 
 ## 📦 Estructura del Proyecto
 
