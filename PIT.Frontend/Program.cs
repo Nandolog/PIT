@@ -9,7 +9,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // ✅ Apuntar al backend WebAPI
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://localhost:32775") // Puerto del backend
+    BaseAddress = new Uri("https://localhost:5001") // Puerto del backend
 });
 
 await builder.Build().RunAsync();

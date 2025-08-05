@@ -1,36 +1,44 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using PIT.Backend.Data;
+using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
+
+// 🔧 Configurar base de datos antes de construir la app
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseInMemoryDatabase("PITDb")); // Para pruebas iniciales
+
+// ✅ Servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ✅ Habilitar CORS para permitir llamadas desde el frontend
+// ✅ CORS: permitir llamadas desde el frontend Blazor
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("https://localhost:7176") // Puerto del frontend
+        policy => policy.WithOrigins("https://localhost:7176") // Puerto fijo del frontend
                         .AllowAnyHeader()
                         .AllowAnyMethod());
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ✅ Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PIT.Backend v1");
+        c.RoutePrefix = "swagger";
+    });
 }
 
-// 🔧 HTTPS redirection desactivado (correcto en entorno local)
+// 🔧 HTTPS redirection desactivado para entorno local
 // app.UseHttpsRedirection();
 
-// ✅ Aplicar CORS antes de Authorization
 app.UseCors("AllowFrontend");
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -1,0 +1,47 @@
+﻿@page "/monitoring"
+@inject HttpClient Http
+
+<h3>📊 Monitoreo de línea</h3>
+
+@if (error != null)
+{
+    <p style="color:red">Error: @error</p>
+}
+else if (events == null)
+{
+    <p>Cargando eventos...</p>
+}
+else
+{
+    <ul>
+        @foreach (var evt in events)
+        {
+            <li>@evt.Timestamp.ToString("dd/MM/yyyy HH:mm:ss") - @evt.Type: @evt.Description (@evt.MachineId)</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Event>? events;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            events = await Http.GetFromJsonAsync<List<Event>>("api/monitoring");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    public class Event
+    {
+        public DateTime Timestamp { get; set; }
+        public string Type { get; set; }
+        public string Description { get; set; }
+        public string MachineId { get; set; }
+    }
+}
