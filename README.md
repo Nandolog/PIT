@@ -1,51 +1,29 @@
-﻿# 🏗️ PIT - Sistema Integrado de Trazabilidad, Capacitación y Recuperación Técnica
+﻿# 🏗️ PIT: Sistema de Trazabilidad y Optimización en el Área de Embolsado
 
-Este proyecto busca demostrar cómo aplicar soluciones tecnológicas reales en entornos industriales con restricciones, usando .NET, Blazor WebAssembly y Docker.
+## 🎯 Objetivo General
+
+Crear una solución técnica que permita **monitorear, analizar y documentar** el proceso de embolsado de cemento, ayudando a:
+
+- 🔍 Identificar cuellos de botella o pérdidas operativas  
+- 📦 Mejorar la planificación y trazabilidad del producto  
+- 🎓 Facilitar la capacitación y la toma de decisiones técnicas  
+
+Este sistema busca aplicar tecnología en entornos industriales con restricciones reales, usando .NET 8, Blazor WebAssembly y Docker.
 
 ---
----
 
-## 🎯 Propósito técnico del sistema de embolsado
+## ⚙️ PIT.Backend - API REST
 
-Este sistema busca monitorear, analizar y documentar el proceso de embolsado de cemento, con los siguientes objetivos:
+- ASP.NET Core 8 + Entity Framework Core (InMemory)
+- Swagger UI disponible en [https://localhost:5001/swagger](https://localhost:5001/swagger)
+- CORS habilitado para `https://localhost:7176`
+- Endpoints disponibles:
+  - `GET /api/Produccion` → Lista simulada de lotes
+  - `POST /api/Produccion` → Agregar nuevo lote
 
-- 🔍 **Identificar cuellos de botella y pérdidas operativas**  
-  Detectar interrupciones, tiempos muertos y errores en el flujo de embolsado.
+### 🔧 ProduccionController.cs
 
-- 📦 **Mejorar la trazabilidad del producto**  
-  Asociar cada lote embolsado con su origen, destino y condiciones operativas.
-
-- 🎓 **Facilitar la capacitación técnica**  
-  Proveer datos reales y visualizaciones para entrenar al personal en decisiones operativas.
-
-- 🧠 **Apoyar la toma de decisiones técnicas**  
-  Generar reportes y métricas que ayuden a ajustar procesos, planificar mantenimiento y optimizar recursos.
-
-Este enfoque permite aplicar tecnología en entornos industriales con restricciones reales, demostrando cómo .NET, Blazor y WebAPI pueden generar impacto operativo concreto.
-
-## 📦 Estructura del Proyecto
-
-```plaintext
-PIT/
-├── PIT.Backend/       # API REST en .NET 8
-│   └── Controllers/
-│       └── ProduccionController.cs
-├── PIT.Frontend/      # Interfaz Blazor WebAssembly
-├── README.md          # Documentación del proyecto
-🚀 Tecnologías utilizadas
-.NET 8
-
-Blazor WebAssembly
-
-ASP.NET Core WebAPI
-
-Docker (configuración en progreso)
-
-Visual Studio 2022+
-
-⚙️ Backend: PIT.Backend
-🔧 Controlador: ProduccionController.cs
-csharp
+```csharp
 [ApiController]
 [Route("api/[controller]")]
 public class ProduccionController : ControllerBase
@@ -62,94 +40,20 @@ public class ProduccionController : ControllerBase
         return CreatedAtAction(nameof(GetLotes), new { id = nuevoLote }, nuevoLote);
     }
 }
-🌐 Endpoints disponibles
-Método	Ruta	Descripción
-GET	/api/Produccion	Devuelve lista simulada de lotes
-POST	/api/Produccion	Agrega un nuevo lote
-🧪 Verificación
-Swagger UI: http://localhost:8080/swagger
+🖥️ PIT.Frontend - Blazor WebAssembly
+Corre en https://localhost:7176
 
-Producción: http://localhost:8080/api/Produccion
+Consume API REST del backend
 
-🖥️ Frontend: PIT.Frontend
-Proyecto Blazor WebAssembly con configuración base:
+Componente EstadoDelSistema.razor muestra los lotes en tiempo real
 
+🔧 Configuración de HttpClient
 csharp
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+    BaseAddress = new Uri("https://localhost:5001")
 });
-🐳 Docker (en progreso)
-Se está preparando el Dockerfile para el backend, compatible con Visual Studio y Docker Desktop. Próximamente se incluirá:
-
-Dockerfile para PIT.Backend
-
-docker-compose opcional
-
-Hosting provisional para pruebas
-
-📌 Cómo ejecutar localmente
-Clonar el repositorio:
-
-bash
-git clone https://github.com/tu-usuario/pit.git
-Abrir la solución en Visual Studio.
-
-Ejecutar el backend (PIT.Backend) en puerto 8080.
-
-Acceder a Swagger: http://localhost:8080/swagger
-
-📚 Objetivo del proyecto
-Este sistema busca ser:
-
-Reproducible y portable
-
-Documentado paso a paso
-
-Adaptable a entornos industriales con restricciones
-
-Referencia técnica para otros analistas
-
-📈 Próximos pasos
-Integrar frontend con backend
-
-Agregar persistencia simulada o real
-
-Desplegar en entorno Docker
-
-Preparar presentación técnica para validación interna
----
-
-## 🛠️ Cambios recientes (agosto 2025)
-
-### 🔧 Backend
-
-- Se habilitó CORS para permitir llamadas desde el frontend (`https://localhost:7176`):
-
-```csharp
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("https://localhost:7176")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
-});
-app.UseCors("AllowFrontend");
-Se confirmó que el backend corre en https://localhost:32775 y expone Swagger UI con los siguientes endpoints:
-
-Método	Ruta	Descripción
-GET	/api/Produccion	Devuelve lista simulada de lotes
-POST	/api/Produccion	Agrega un nuevo lote
-🌐 Frontend
-Se corrigió la URL del backend en Program.cs:
-
-csharp
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri("https://localhost:32775")
-});
-Se creó el componente EstadoDelSistema.razor que consume el endpoint api/produccion y muestra los lotes:
-
+🔧 Componente EstadoDelSistema.razor
 razor
 @inject HttpClient Http
 
@@ -189,10 +93,34 @@ else
         }
     }
 }
-📌 Verificación
-Swagger UI disponible en: https://localhost:32775/swagger
+🐳 Docker (en progreso)
+Dockerfile para PIT.Backend
 
-Frontend Blazor funcionando en: https://localhost:7176
+docker-compose opcional
+
+Hosting provisional para pruebas
+
+📌 Cómo ejecutar localmente
+bash
+git clone https://github.com/tu-usuario/pit.git
+Abrir la solución en Visual Studio
+
+Ejecutar el backend en https://localhost:5001
+
+Ejecutar el frontend en https://localhost:7176
+
+Verificar conexión en Swagger y en el componente EstadoDelSistema
+
+📚 Objetivo del proyecto
+Este sistema busca ser:
+
+Reproducible y portable
+
+Documentado paso a paso
+
+Adaptable a entornos industriales con restricciones
+
+Referencia técnica para otros analistas
 
 🤝 Autor
-Fernando — Analista técnico, enfocado en soluciones reales, reproducibles y documentada
+Fernando — Analista técnico, enfocado en soluciones reales, reproducibles y documentadas para entornos industriales.
