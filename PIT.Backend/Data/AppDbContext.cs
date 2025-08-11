@@ -14,5 +14,8 @@ namespace PIT.Backend.Data
         }
 
         public DbSet<Event> Events { get; set; }
+
+        public DbSet<RegistroEmbolsado> Embolsados { get; set; }
+
     }
 }

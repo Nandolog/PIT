@@ -1,0 +1,57 @@
+﻿@page "/nuevo"
+@using PIT.Frontend.Shared.Models
+@inject HttpClient Http
+
+<h3>🆕 Nuevo Registro de Embolsado</h3>
+
+<EditForm Model="@registro" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Lote ID</label>
+        <InputText class="form-control" @bind-Value="registro.LoteId" />
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha y Hora</label>
+        <InputDate class="form-control" @bind-Value="registro.FechaHora" />
+    </div>
+
+    <div class="mb-3">
+        <label>Operador</label>
+        <InputText class="form-control" @bind-Value="registro.Operador" />
+    </div>
+
+    <div class="mb-3">
+        <label>Turno</label>
+        <InputText class="form-control" @bind-Value="registro.Turno" />
+    </div>
+
+    <div class="mb-3">
+        <label>Cantidad</label>
+        <InputNumber class="form-control" @bind-Value="registro.Cantidad" />
+    </div>
+
+    <div class="mb-3">
+        <label>Observaciones</label>
+        <InputTextArea class="form-control" @bind-Value="registro.Observaciones" />
+    </div>
+
+    <div class="mb-3">
+        <label>Estado</label>
+        <InputText class="form-control" @bind-Value="registro.Estado" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+</EditForm>
+
+@code {
+    private RegistroEmbolsadoDto registro = new();
+
+    private async Task Guardar()
+    {
+        await Http.PostAsJsonAsync("api/Historial", registro);
+        Console.WriteLine("Registro guardado");
+    }
+}

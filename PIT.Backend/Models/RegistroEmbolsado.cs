@@ -1,0 +1,14 @@
+﻿namespace PIT.Backend.Models
+{
+    public class RegistroEmbolsado
+    {
+        public int Id { get; set; }
+        public string LoteId { get; set; }
+        public DateTime FechaHora { get; set; }
+        public string Turno { get; set; }
+        public string Operador { get; set; }
+        public int Cantidad { get; set; }
+        public string Estado { get; set; }
+        public string Observaciones { get; set; }
+    }
+}

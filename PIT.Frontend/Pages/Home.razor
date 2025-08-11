@@ -1,7 +1,54 @@
-﻿@page "/"
+﻿@using PIT.Frontend.Shared.Models
+@using PIT.Shared.Models
+@page "/"
+@page "/home"
+@inject HttpClient Http
 
-<PageTitle>Home</PageTitle>
+<h3 class="mb-4">🏠 Bienvenido al sistema de embolsado</h3>
 
-<h1>Hello, world!</h1>
+@if (respuesta == null)
+{
+    <div class="alert alert-info">🔄 Cargando historial...</div>
+}
+else if (respuesta.Registros == null || !respuesta.Registros.Any())
+{
+    <div class="alert alert-warning">⚠️ No se encontraron registros.</div>
+}
+else
+{
+    <div class="alert alert-success mb-3">✅ Se cargaron @respuesta.Registros.Count registros.</div>
 
-Welcome to your new app.
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        @foreach (var registro in respuesta.Registros.Take(5))
+        {
+            <div class="col">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">🏷️ <strong>@registro.LoteId</strong></h5>
+                        <p class="card-text mb-1">📅 @registro.FechaHora.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p class="card-text mb-1">👷 @registro.Operador — 🕒 @registro.Turno</p>
+                        <p class="card-text mb-1">📦 <strong>@registro.Cantidad</strong> bolsas</p>
+                        <p class="card-text">📝 <em>@registro.Observaciones</em></p>
+                        <span class="badge @(registro.Estado == "OK" ? "bg-success" : "bg-warning")">@registro.Estado</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private RespuestaHistorial? respuesta;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            respuesta = await Http.GetFromJsonAsync<RespuestaHistorial>("api/Historial");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar historial: {ex.Message}");
+        }
+    }
+}

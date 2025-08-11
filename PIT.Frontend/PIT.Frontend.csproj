@@ -14,6 +14,10 @@
   <ItemGroup>
     <Folder Include="Client\" />
     <Folder Include="Server\" />
+     <ProjectReference Include="..\PIT.Shared\PIT.Shared.csproj" />
   </ItemGroup>
+
+  
+
 
 </Project>
